@@ -1,9 +1,6 @@
 package com.example.ny.network;
 
-import android.util.Log;
-
 import com.example.myapplication.DTO.ResultsDTO;
-import com.example.ny.network.ApiKeyInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,17 +11,17 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 
-public class TopNewsResponse {
+public class RestApi {
     private static final String URL = "https://api.nytimes.com";
     private static final String API_KEY = "161HEGGLNZnSQ1TP1tA2W5k9kUla9cnj";
 
     private static final int TIMEOUT_IN_SECONDS = 2;
 
-    private static TopNewsResponse response;
+    private static RestApi sInstance;
 
     private final NewsEndpoint newsEndpoint;
 
-    private TopNewsResponse(){
+    private RestApi(){
 
         final OkHttpClient httpClient = buildOkHttpClient();
         final Retrofit retrofit = buildRetrofitClient(httpClient);
@@ -54,11 +51,11 @@ public class TopNewsResponse {
                 .build();
     }
 
-    public static TopNewsResponse getInstance(){
-        if (response == null)
-            response = new TopNewsResponse();
-
-        return response;
+    public static synchronized RestApi getInstance() {
+        if (sInstance == null) {
+            sInstance = new RestApi();
+        }
+        return sInstance;
     }
 
     public interface NewsEndpoint{
