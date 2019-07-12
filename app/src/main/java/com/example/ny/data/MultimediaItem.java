@@ -1,10 +1,10 @@
 
-package com.example.myapplication.DTO;
+package com.example.ny.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MultimediaDTO {
+public class MultimediaItem {
 
     @SerializedName("url")
     @Expose

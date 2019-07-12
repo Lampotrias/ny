@@ -17,7 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ny.R;
 import com.example.ny.data.DataUtils;
 import com.example.ny.data.NewsItem;
+import com.example.ny.data.NewsResponse;
 import com.example.ny.details.NewsDetailsActivity;
+import com.example.ny.network.INewsEndPoint;
+import com.example.ny.network.RestApi;
 import com.example.ny.utils.Utils;
 
 import java.util.List;
@@ -25,6 +28,9 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
@@ -109,11 +115,25 @@ public class NewsListActivity extends AppCompatActivity {
 
 	private void loadItems() {
 		showProgress(true);
-		disposable = DataUtils.observeNews()
+
+		INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
+		Call<NewsResponse> test = endPoint.getNews();
+		test.enqueue(new Callback<NewsResponse>() {
+			@Override
+			public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
+
+			}
+
+			@Override
+			public void onFailure(Call<NewsResponse> call, Throwable t) {
+
+			}
+		});
+		/*disposable = DataUtils.observe News()
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(this::updateItems,
-						this::handleError);
+						this::handleError);*/
 	}
 
 	private void updateItems(@Nullable List<NewsItem> news) {

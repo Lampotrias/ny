@@ -25,7 +25,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_details);
 
-        final NewsItem newsItem = (NewsItem) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
+     /*   final NewsItem newsItem = (NewsItem) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
 
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -45,7 +45,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
         titleView.setText(newsItem.getTitle());
         textView.setText(newsItem.getFullText());
-        dateView.setText(Utils.formatDateTime(this, newsItem.getPublishDate()));
+        dateView.setText(Utils.formatDateTime(this, newsItem.getPublishDate()));*/
     }
 
     @Override
@@ -55,6 +55,6 @@ public class NewsDetailsActivity extends AppCompatActivity {
     }
 
     public static void start(@NonNull Context context, @NonNull NewsItem newsItem) {
-        context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, newsItem));
+     //   context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, newsItem));
     }
 }

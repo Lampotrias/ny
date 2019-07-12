@@ -1,11 +1,9 @@
 
-package com.example.myapplication.DTO;
+package com.example.ny.DTO;
 
-import java.util.Date;
 import java.util.List;
 
-import com.bumptech.glide.util.Util;
-import com.example.myapplication.Utils;
+import com.example.ny.data.MultimediaItem;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -79,7 +77,7 @@ public class NewsDTO {
 
     @SerializedName("multimedia")
     @Expose
-    private List<MultimediaDTO> multimedia = null;
+    private List<MultimediaItem> multimedia = null;
 
     @SerializedName("short_url")
     @Expose
@@ -101,47 +99,7 @@ public class NewsDTO {
         return _abstract;
     }
 
-    public Date getPublishedDate() {
-        return Utils.getFormatedDate(publishedDate);
-    }
-
-    public String getSubsection() {
-        return subsection;
-    }
-
-    public String getSrcThumbnail(){
-        String path = null;
-        List<MultimediaDTO> multimedia = getMultimedia();
-
-        for (MultimediaDTO obj : multimedia){
-            if (obj.getFormat().equals("Normal"))
-            {
-                path = obj.getUrl();
-            }
-        }
-        if (path == null)
-            path = NO_IMAGE_PATH;
-
-        return path;
-    }
-
-    public String getSrcThumbnailByType (String itemType){
-        String path = null;
-        List<MultimediaDTO> multimedia = getMultimedia();
-
-        for (MultimediaDTO obj : multimedia){
-            if (obj.getFormat().equals(itemType))
-            {
-                path = obj.getUrl();
-            }
-        }
-        if (path == null)
-            path = NO_IMAGE_PATH;
-
-        return path;
-    }
-
-    private List<MultimediaDTO> getMultimedia() {
+    private List<MultimediaItem> getMultimedia() {
         return multimedia;
     }
 }

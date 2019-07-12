@@ -93,13 +93,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
 
         void bind(NewsItem newsItem) {
-            imageLoader.load(newsItem.getImageUrl())
+            imageLoader.load(newsItem.getThumbnailStandard())
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
-            categoryView.setText(newsItem.getCategory().getName());
+            categoryView.setText(newsItem.getSection());
             titleView.setText(newsItem.getTitle());
             previewView.setText(newsItem.getPreviewText());
-            dateView.setText(Utils.formatDateTime(itemView.getContext(), newsItem.getPublishDate()));
+            dateView.setText(newsItem.getPublishedDate());
         }
     }
 

@@ -1,5 +1,5 @@
 
-package com.example.myapplication.DTO;
+package com.example.ny.DTO;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
