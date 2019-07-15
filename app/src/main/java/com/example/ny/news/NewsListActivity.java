@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ny.R;
-import com.example.ny.data.DataUtils;
 import com.example.ny.data.NewsItem;
-import com.example.ny.data.NewsResponse;
 import com.example.ny.details.NewsDetailsActivity;
 import com.example.ny.network.INewsEndPoint;
 import com.example.ny.network.RestApi;
@@ -26,11 +24,9 @@ import com.example.ny.utils.Utils;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
@@ -38,6 +34,7 @@ public class NewsListActivity extends AppCompatActivity {
 
 	public static final String TAG = NewsListActivity.class.getSimpleName();
 
+	private CompositeDisposable disposables;
 	@Nullable
 	private ProgressBar progress;
 	@Nullable private RecyclerView recycler;
@@ -45,8 +42,6 @@ public class NewsListActivity extends AppCompatActivity {
 
 	@Nullable private View error;
 	@Nullable private Button errorAction;
-
-	@Nullable private Disposable disposable;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +53,8 @@ public class NewsListActivity extends AppCompatActivity {
 		recycler = findViewById(R.id.recycler);
 		error = findViewById(R.id.error_layout);
 		errorAction = findViewById(R.id.action_button);
+
+		disposables = new CompositeDisposable();
 
 		adapter = new NewsAdapter(this, newsItem -> NewsDetailsActivity.start(this, newsItem));
 		recycler.setAdapter(adapter);
@@ -84,8 +81,8 @@ public class NewsListActivity extends AppCompatActivity {
 		super.onStop();
 		showProgress(false);
 
-		Utils.disposeSafe(disposable);
-		disposable = null;
+		Utils.disposeSafe(disposables);
+		disposables = null;
 	}
 
 	@Override
@@ -115,25 +112,15 @@ public class NewsListActivity extends AppCompatActivity {
 
 	private void loadItems() {
 		showProgress(true);
-
 		INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
-		Call<NewsResponse> test = endPoint.getNews();
-		test.enqueue(new Callback<NewsResponse>() {
-			@Override
-			public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
 
-			}
-
-			@Override
-			public void onFailure(Call<NewsResponse> call, Throwable t) {
-
-			}
-		});
-		/*disposable = DataUtils.observe News()
+		disposables.add(endPoint.getNews()
+				.map(newsResponse -> newsResponse.getResults())
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(this::updateItems,
-						this::handleError);*/
+				.subscribe(this::updateItems, this::handleError)
+		);
+
 	}
 
 	private void updateItems(@Nullable List<NewsItem> news) {
