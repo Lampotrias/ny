@@ -16,10 +16,9 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ny.R;
-import com.example.ny.Utils;
-import com.example.ny.data.NewsItem;
 
-import org.w3c.dom.Text;
+import com.example.ny.data.ImageType;
+import com.example.ny.data.NewsItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,15 +84,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                     listener.onItemClick(items.get(position));
                 }
             });
-            categoryView =  (TextView) itemView.findViewById(R.id.item_category);
-            imageView =     (ImageView) itemView.findViewById(R.id.item_image);
-            titleView =     (TextView) itemView.findViewById(R.id.item_title);
-            previewView =   (TextView) itemView.findViewById(R.id.item_preview);
-            dateView =      (TextView) itemView.findViewById(R.id.item_date);
+            categoryView =   itemView.findViewById(R.id.item_category);
+            imageView =      itemView.findViewById(R.id.item_image);
+            titleView =      itemView.findViewById(R.id.item_title);
+            previewView =    itemView.findViewById(R.id.item_preview);
+            dateView =       itemView.findViewById(R.id.item_date);
         }
 
         void bind(NewsItem newsItem) {
-            imageLoader.load(newsItem.getThumbnailStandard())
+            imageLoader.load(newsItem.getImageByType(ImageType.STANDART_THUMBNAIL))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
             categoryView.setText(newsItem.getSection());

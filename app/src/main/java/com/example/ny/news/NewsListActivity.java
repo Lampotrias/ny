@@ -25,7 +25,7 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
+
 import io.reactivex.schedulers.Schedulers;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
@@ -120,7 +120,6 @@ public class NewsListActivity extends AppCompatActivity {
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(this::updateItems, this::handleError)
 		);
-
 	}
 
 	private void updateItems(@Nullable List<NewsItem> news) {

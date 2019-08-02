@@ -11,7 +11,7 @@ import retrofit2.http.Path;
 
 public interface INewsEndPoint {
 	@GET ("home.json")
-	Single<NewsResponse> getNews();
+	Observable<NewsResponse> getNews();
 
 	@GET ("{section}.json")
 	Observable<NewsResponse> getNewsByCategory(@Path("section") String category);
