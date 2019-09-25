@@ -54,8 +54,6 @@ public class NewsListActivity extends AppCompatActivity {
 		error = findViewById(R.id.error_layout);
 		errorAction = findViewById(R.id.action_button);
 
-		disposables = new CompositeDisposable();
-
 		adapter = new NewsAdapter(this, newsItem -> NewsDetailsActivity.start(this, newsItem));
 		recycler.setAdapter(adapter);
 		recycler.addItemDecoration(new NewsItemDecoration(getResources().getDimensionPixelSize(R.dimen.spacing_micro)));
@@ -73,6 +71,8 @@ public class NewsListActivity extends AppCompatActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+
+		disposables = new CompositeDisposable();
 		loadItems();
 	}
 

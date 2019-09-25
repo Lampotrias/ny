@@ -2,14 +2,9 @@ package com.example.ny.data;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class NewsItem {
-
-    /*@SerializedName("per_facet")
-    private List<String> perFacet;*/
 
     @SerializedName("subsection")
     private String subsection;
@@ -17,8 +12,6 @@ public class NewsItem {
     @SerializedName("item_type")
     private String itemType;
 
-   /* @SerializedName("org_facet")
-    private List<String> orgFacet;*/
 
     @SerializedName("section")
     private String section;
@@ -31,9 +24,6 @@ public class NewsItem {
 
     @SerializedName("title")
     private String title;
-
-   /* @SerializedName("des_facet")
-    private List<String> desFacet;*/
 
     @SerializedName("url")
     private String url;
@@ -101,32 +91,4 @@ public class NewsItem {
     public String getPublishedDate() {
         return publishedDate;
     }
-
-
-   /* @Override
-    public String toString() {
-        return
-                "NewsItem{" +
-                        "per_facet = '" + perFacet + '\'' +
-                        ",subsection = '" + subsection + '\'' +
-                        ",item_type = '" + itemType + '\'' +
-                        ",org_facet = '" + orgFacet + '\'' +
-                        ",section = '" + section + '\'' +
-                        ",abstract = '" + previewText + '\'' +
-                        ",related_urls = '" + relatedUrls + '\'' +
-                        ",title = '" + title + '\'' +
-                        ",des_facet = '" + desFacet + '\'' +
-                        ",url = '" + url + '\'' +
-                        ",short_url = '" + shortUrl + '\'' +
-                        ",material_type_facet = '" + materialTypeFacet + '\'' +
-                        ",thumbnail_standard = '" + thumbnailStandard + '\'' +
-                        ",multimedia = '" + multimedia + '\'' +
-                        ",geo_facet = '" + geoFacet + '\'' +
-                        ",updated_date = '" + updatedDate + '\'' +
-                        ",created_date = '" + createdDate + '\'' +
-                        ",byline = '" + byline + '\'' +
-                        ",published_date = '" + publishedDate + '\'' +
-                        ",kicker = '" + kicker + '\'' +
-                        "}";
-    }*/
 }

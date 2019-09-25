@@ -45,7 +45,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 .into(imageView);
 
         titleView.setText(newsItem.getTitle());
-        textView.setText(newsItem.getFullText());
+        //textView.setText(newsItem.getFullText());
         dateView.setText(newsItem.getPublishedDate());
     }
 
@@ -56,6 +56,6 @@ public class NewsDetailsActivity extends AppCompatActivity {
     }
 
     public static void start(@NonNull Context context, @NonNull NewsItem newsItem) {
-     //   context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, newsItem));
+        //context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, newsItem));
     }
 }
