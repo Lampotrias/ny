@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"/>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Toolbar">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+    </androidx.appcompat.widget.Toolbar>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="@dimen/spacing_micro"
-        tools:context=".news.NewsListActivity"
-        tools:listitem="@layout/item_news"/>
+        android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/error_layout"
-        layout="@layout/layout_error"
-        android:visibility="gone"/>
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"/>
+
+            <!--
+            <Spinner
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/spinner"/>-->
 
 
-</FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="@dimen/spacing_micro"
+            tools:context=".news.NewsListActivity"
+            tools:listitem="@layout/item_news"/>
+
+        <include
+            android:id="@+id/error_layout"
+            layout="@layout/layout_error"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+</LinearLayout>

@@ -3,10 +3,16 @@ package com.example.ny.news;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,11 +49,17 @@ public class NewsListActivity extends AppCompatActivity {
 	@Nullable private View error;
 	@Nullable private Button errorAction;
 
+	private Toolbar toolbar;
+	private MenuItem mSpinnerItem = null;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_news_list);
+
+		toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
 		progress = findViewById(R.id.progress);
 		recycler = findViewById(R.id.recycler);
@@ -87,7 +99,38 @@ public class NewsListActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_option, menu);
+
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.menu_option, menu);
+
+		mSpinnerItem = menu.findItem( R.id.action_bar_spinner);
+		View view = mSpinnerItem.getActionView();
+
+		if (view instanceof Spinner){
+			final Spinner spinner = (Spinner) view;
+
+			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utils.GetCategoryArray());
+			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(spinnerAdapter);
+			spinner.setSelection(1);
+
+			spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+					if (position > 0){
+						loadItemsByCategory(Utils.GetCategoryNameByID(position));
+					}else{
+						loadItems();
+					}
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> parent) {
+
+				}
+			});
+		}
+
 		return true;
 	}
 
@@ -115,6 +158,18 @@ public class NewsListActivity extends AppCompatActivity {
 		INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
 
 		disposables.add(endPoint.getNews()
+				.map(newsResponse -> newsResponse.getResults())
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(this::updateItems, this::handleError)
+		);
+	}
+
+	private void loadItemsByCategory(String categoryName) {
+		showProgress(true);
+		INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
+
+		disposables.add(endPoint.getNewsByCategory(categoryName)
 				.map(newsResponse -> newsResponse.getResults())
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())

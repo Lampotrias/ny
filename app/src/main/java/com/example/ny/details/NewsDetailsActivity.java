@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.ny.R;
-import com.example.ny.Utils;
+
 import com.example.ny.data.ImageType;
 import com.example.ny.data.NewsItem;
 

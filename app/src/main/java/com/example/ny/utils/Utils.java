@@ -17,6 +17,11 @@ import static android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE;
 import static android.text.format.DateUtils.HOUR_IN_MILLIS;
 
 public class Utils {
+
+    private static final String[] arr = {"All", "arts", "automobiles", "books", "business", "fashion", "food", "health", "home", "insider", "magazine",
+            "movies", "national", "nyregion", "obituaries", "opinion", "politics", "realestate", "science", "sports", "sundayreview", "technology",
+            "theater", "tmagazine", "travel", "upshot"};
+
     public static CharSequence formatDateTime(Context context, Date dateTime) {
         return DateUtils.getRelativeDateTimeString(
                 context,
@@ -43,6 +48,19 @@ public class Utils {
     public static boolean isDebug() {
         return BuildConfig.DEBUG;
     }
+
+    public static String[] GetCategoryArray(){
+        return arr;
+    }
+
+    public static String GetCategoryNameByID(int position){
+        try{
+            return arr[position];
+        }catch (Exception e){
+            return "All";
+        }
+    }
+
 
     private Utils() {
         throw new AssertionError("No instances");
