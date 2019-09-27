@@ -34,4 +34,5 @@
     <string name="linkedin_url" translatable="false">https://www.linkedin.com/in/евгений-мацюк-a6537241/</string>
     <string name="github_url" translatable="false">https://github.com/matzuk</string>
     <string name="select_category">Select Category</string>
+    <string name="title_activity_intro">Intro</string>
 </resources>

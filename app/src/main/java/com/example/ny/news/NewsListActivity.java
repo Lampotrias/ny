@@ -109,9 +109,10 @@ public class NewsListActivity extends AppCompatActivity {
 		if (view instanceof Spinner){
 			final Spinner spinner = (Spinner) view;
 
-			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utils.GetCategoryArray());
+			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.spinner_layout, Utils.GetCategoryArray());
 			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			spinner.setAdapter(spinnerAdapter);
+
 			spinner.setSelection(1);
 
 			spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
