@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ic_launcher_background"
-    android:backgroundTint="#075774"
+    android:backgroundTint="#FFFFFF"
     tools:context=".news.Intro">
 
 
@@ -14,5 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="70dp"
-        app:srcCompat="@drawable/intro" />
+        app:srcCompat="@drawable/intro"
+        android:contentDescription="TODO" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

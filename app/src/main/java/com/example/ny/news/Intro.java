@@ -30,7 +30,6 @@ public class Intro extends AppCompatActivity {
 
 		int bNeedIntro = sharedPref.getInt(DATA_KEY, 2);
 
-		Log.e("test == = = ==  =", String.valueOf(bNeedIntro));
 		if (bNeedIntro > 1){
 			setContentView(R.layout.activity_intro);
 			Disposable disposable = Completable.complete()
@@ -39,7 +38,6 @@ public class Intro extends AppCompatActivity {
 			compositeDisposable.add(disposable);
 			editor.putInt(DATA_KEY, 1);
 		}else{
-			Log.e("test == = = ==  =11111", String.valueOf(bNeedIntro));
 			editor.putInt(DATA_KEY, ++bNeedIntro);
 			editor.apply();
 			this.StartMainActivity();

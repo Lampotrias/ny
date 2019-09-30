@@ -5,22 +5,15 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class NewsItem {
-
-    @SerializedName("subsection")
-    private String subsection;
-
-    @SerializedName("item_type")
-    private String itemType;
-
-
     @SerializedName("section")
     private String section;
 
+
+
+    private String imageUrl = "";
+
     @SerializedName("abstract")
     private String previewText;
-
-    @SerializedName("related_urls")
-    private List<RelatedUrlsItem> relatedUrls;
 
     @SerializedName("title")
     private String title;
@@ -31,32 +24,27 @@ public class NewsItem {
     @SerializedName("short_url")
     private String shortUrl;
 
-    @SerializedName("material_type_facet")
-    private String materialTypeFacet;
-
-    @SerializedName("thumbnail_standard")
-    private String thumbnailStandard;
-
     @SerializedName("multimedia")
     private List<MultimediaItem> multimedia;
-
-    @SerializedName("geo_facet")
-    private List<String> geoFacet;
-
-    @SerializedName("updated_date")
-    private String updatedDate;
-
-    @SerializedName("created_date")
-    private String createdDate;
-
-    @SerializedName("byline")
-    private String byline;
 
     @SerializedName("published_date")
     private String publishedDate;
 
-    @SerializedName("kicker")
-    private String kicker;
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public void setPreviewText(String previewText) {
+        this.previewText = previewText;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPublishedDate(String publishedDate) {
+        this.publishedDate = publishedDate;
+    }
 
     public String getSection() {
         return section;
@@ -65,7 +53,9 @@ public class NewsItem {
     public String getPreviewText() {
         return previewText;
     }
-
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
     public String getTitle() {
         return title;
     }
@@ -76,16 +66,21 @@ public class NewsItem {
 
     public String getImageByType(ImageType type)
     {
-        String strImage = "http://www.glumac.com/htdocs/content/plugins/slider/images/noimage.png";
+        if (this.imageUrl.isEmpty()){
+            String strImage = "http://www.glumac.com/htdocs/content/plugins/slider/images/noimage.png";
 
-        for (MultimediaItem item : this.getMultimedia()){
-            if(item.getFormat().equals(type.getDesc())) {
-                strImage = item.getUrl();
-                break;
+            for (MultimediaItem item : this.getMultimedia()){
+                if(item.getFormat().equals(type.getDesc())) {
+                    strImage = item.getUrl();
+                    break;
+                }
             }
-        }
 
-        return strImage;
+            return strImage;
+        }
+        else{
+            return this.imageUrl;
+        }
     }
 
     public String getPublishedDate() {
