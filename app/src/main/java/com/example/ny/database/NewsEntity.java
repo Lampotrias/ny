@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "news")
 public class NewsEntity {
-	@PrimaryKey
+
+	@PrimaryKey(autoGenerate = true)
 	@NonNull
 	private int id;
 
@@ -98,5 +99,18 @@ public class NewsEntity {
 
 	public void setDateCreate(@NonNull String dateCreate) {
 		this.dateCreate = dateCreate;
+	}
+
+	@Override
+	public String toString() {
+		return "NewsEntity{" +
+				"id=" + id +
+				", title='" + title + '\'' +
+				", previewText='" + previewText + '\'' +
+				", fullText='" + fullText + '\'' +
+				", section='" + section + '\'' +
+				", imageLink='" + imageLink + '\'' +
+				", dateCreate='" + dateCreate + '\'' +
+				'}';
 	}
 }

@@ -83,6 +83,20 @@ public class NewsItem {
         }
     }
 
+    @Override
+    public String toString() {
+        return "NewsItem{" +
+                "section='" + section + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", previewText='" + previewText + '\'' +
+                ", title='" + title + '\'' +
+                ", url='" + url + '\'' +
+                ", shortUrl='" + shortUrl + '\'' +
+                ", multimedia=" + multimedia +
+                ", publishedDate='" + publishedDate + '\'' +
+                '}';
+    }
+
     public String getPublishedDate() {
         return publishedDate;
     }

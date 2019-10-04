@@ -6,28 +6,32 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.ny.data.NewsItem;
-
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 
 @Dao
 public interface NewsDao {
 	@Query("SELECT * FROM news")
-	Observable<List<NewsEntity>> getAll();
+	List<NewsEntity> getAll();
+
+	@Query("SELECT * FROM news")
+	Flowable<List<NewsEntity>> getAllFromDatabase();
 
 	@Query("SELECT * FROM news WHERE id = :id")
 	NewsEntity getNewsByID(int id);
 
 	@Insert (onConflict = OnConflictStrategy.REPLACE)
-	void insertAll(NewsEntity... newsEntities);
+	void insertAll(List<NewsEntity> newsEntities);
 
 	@Insert (onConflict = OnConflictStrategy.REPLACE)
 	void insert(NewsEntity newsEntities);
 
 	@Delete
 	void delete (NewsEntity newsEntities);
+
+	@Query("DELETE FROM news")
+	void deleteAll();
 
 
 }

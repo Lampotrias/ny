@@ -1,10 +1,17 @@
 package com.example.ny.data;
 
+import android.util.Log;
+
 import com.example.ny.database.NewsEntity;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConverterData {
 
-	public static NewsEntity toDatabase(NewsItem newsItem){
+	public static NewsEntity toDatabase(@NotNull NewsItem newsItem){
 		NewsEntity newsEntity = new NewsEntity();
 		newsEntity.setTitle(newsItem.getTitle());
 		newsEntity.setSection(newsItem.getSection());
@@ -16,7 +23,7 @@ public class ConverterData {
 		return newsEntity;
 	}
 
-	public static NewsItem fromDatabase(NewsEntity newsEntity){
+	public static NewsItem fromDatabase(@NotNull NewsEntity newsEntity){
 		NewsItem newsItem = new NewsItem();
 		newsItem.setTitle(newsEntity.getTitle());
 		newsItem.setSection(newsEntity.getSection());
@@ -25,5 +32,20 @@ public class ConverterData {
 		newsItem.setImageUrl(newsEntity.getImageLink());
 		newsItem.setPublishedDate(newsEntity.getDateCreate());
 		return newsItem;
+	}
+	public static List<NewsEntity> fromListToDatabase(@NotNull List<NewsItem> newsItemList){
+		List<NewsEntity> list = new ArrayList<>();
+		for (NewsItem it: newsItemList) {
+			list.add(ConverterData.toDatabase(it));
+		}
+		return list;
+	}
+
+	public static List<NewsItem> fromDatabaseToList(@NotNull List<NewsEntity> newsItemList){
+		List<NewsItem> list = new ArrayList<>();
+		for (NewsEntity it: newsItemList) {
+			list.add(ConverterData.fromDatabase(it));
+		}
+		return list;
 	}
 }

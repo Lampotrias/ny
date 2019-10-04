@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -21,11 +20,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ny.R;
+import com.example.ny.data.ConverterData;
 import com.example.ny.data.NewsItem;
+import com.example.ny.data.NewsResponse;
+import com.example.ny.database.AppDatabase;
+import com.example.ny.database.NewsEntity;
 import com.example.ny.details.NewsDetailsActivity;
 import com.example.ny.network.INewsEndPoint;
 import com.example.ny.network.RestApi;
 import com.example.ny.utils.Utils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -51,6 +55,7 @@ public class NewsListActivity extends AppCompatActivity {
 
 	private Toolbar toolbar;
 	private MenuItem mSpinnerItem = null;
+	private FloatingActionButton floatingReloadButton;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,10 +72,24 @@ public class NewsListActivity extends AppCompatActivity {
 		errorAction = findViewById(R.id.action_button);
 
 		adapter = new NewsAdapter(this, newsItem -> NewsDetailsActivity.start(this, newsItem));
-		recycler.setAdapter(adapter);
-		recycler.addItemDecoration(new NewsItemDecoration(getResources().getDimensionPixelSize(R.dimen.spacing_micro)));
 
-		errorAction.setOnClickListener(view -> loadItems());
+		if (recycler != null) {
+			recycler.setAdapter(adapter);
+			recycler.addItemDecoration(new NewsItemDecoration(getResources().getDimensionPixelSize(R.dimen.spacing_micro)));
+		}
+
+
+		if (errorAction != null) {
+			errorAction.setOnClickListener(view -> loadItems());
+		}
+
+		floatingReloadButton = findViewById(R.id.floatReload);
+		floatingReloadButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				loadItems();
+			}
+		});
 
 		if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
 			final int columnsCount = getResources().getInteger(R.integer.landscape_news_columns_count);
@@ -85,7 +104,7 @@ public class NewsListActivity extends AppCompatActivity {
 		super.onStart();
 
 		disposables = new CompositeDisposable();
-		loadItems();
+		//loadItems();
 	}
 
 	@Override
@@ -113,15 +132,15 @@ public class NewsListActivity extends AppCompatActivity {
 			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			spinner.setAdapter(spinnerAdapter);
 
-			spinner.setSelection(1);
+			spinner.setSelection(0);
 
-			spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			/*spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 				@Override
 				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 					if (position > 0){
-						loadItemsByCategory(Utils.GetCategoryNameByID(position));
+						//loadItemsByCategory(Utils.GetCategoryNameByID(position));
 					}else{
-						loadItems();
+						//loadItems();
 					}
 				}
 
@@ -129,7 +148,7 @@ public class NewsListActivity extends AppCompatActivity {
 				public void onNothingSelected(AdapterView<?> parent) {
 
 				}
-			});
+			});*/
 		}
 
 		return true;
@@ -157,13 +176,32 @@ public class NewsListActivity extends AppCompatActivity {
 	private void loadItems() {
 		showProgress(true);
 		INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
-
 		disposables.add(endPoint.getNews()
-				.map(newsResponse -> newsResponse.getResults())
+				.map(NewsResponse::getResults)
+				.map(ConverterData::fromListToDatabase)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(this::updateItems, this::handleError)
+				.subscribe(this::OnResponseHandler, this::handleError)
 		);
+	}
+
+	private void OnResponseHandler(List<NewsEntity> newsEntities) {
+		AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+
+		db.newsDao().deleteAll();
+		db.newsDao().insertAll(newsEntities);
+
+		if (adapter != null) {
+			disposables.add(db.newsDao().getAllFromDatabase()
+					.map(ConverterData::fromDatabaseToList)
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(adapter::replaceItems, this::handleError));
+		}
+
+		Utils.setVisible(recycler, true);
+		Utils.setVisible(progress, false);
+		Utils.setVisible(error, false);
 	}
 
 	private void loadItemsByCategory(String categoryName) {
@@ -179,7 +217,9 @@ public class NewsListActivity extends AppCompatActivity {
 	}
 
 	private void updateItems(@Nullable List<NewsItem> news) {
-		if (adapter != null) adapter.replaceItems(news);
+		if (adapter != null) {
+			adapter.replaceItems(news);
+		}
 
 		Utils.setVisible(recycler, true);
 		Utils.setVisible(progress, false);
