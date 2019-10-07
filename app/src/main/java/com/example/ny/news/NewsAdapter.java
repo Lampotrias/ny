@@ -19,9 +19,12 @@ import com.example.ny.R;
 
 import com.example.ny.data.ImageType;
 import com.example.ny.data.NewsItem;
+import com.example.ny.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.internal.Util;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
@@ -66,7 +69,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(@NonNull NewsItem newsItem);
+        void onItemClick(@NonNull int id);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -81,7 +84,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             itemView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(items.get(position));
+                    int id = items.get(position).getId();
+                    listener.onItemClick(id);
                 }
             });
             categoryView =   itemView.findViewById(R.id.item_category);
@@ -98,7 +102,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             categoryView.setText(newsItem.getSection());
             titleView.setText(newsItem.getTitle());
             previewView.setText(newsItem.getPreviewText());
-            dateView.setText(newsItem.getPublishedDate());
+            dateView.setText(Utils.ConvertToPubFormat(newsItem.getPublishedDate()));
         }
     }
 

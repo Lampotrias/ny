@@ -71,7 +71,9 @@ public class NewsListActivity extends AppCompatActivity {
 		error = findViewById(R.id.error_layout);
 		errorAction = findViewById(R.id.action_button);
 
-		adapter = new NewsAdapter(this, newsItem -> NewsDetailsActivity.start(this, newsItem));
+		adapter = new NewsAdapter(this, id  -> {
+			NewsDetailsActivity.start(this, id);
+		});
 
 		if (recycler != null) {
 			recycler.setAdapter(adapter);
@@ -84,12 +86,7 @@ public class NewsListActivity extends AppCompatActivity {
 		}
 
 		floatingReloadButton = findViewById(R.id.floatReload);
-		floatingReloadButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				loadItems();
-			}
-		});
+		floatingReloadButton.setOnClickListener(v -> loadItems());
 
 		if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
 			final int columnsCount = getResources().getInteger(R.integer.landscape_news_columns_count);
@@ -103,8 +100,8 @@ public class NewsListActivity extends AppCompatActivity {
 	protected void onStart() {
 		super.onStart();
 
+		Utils.setVisible(error, false);
 		disposables = new CompositeDisposable();
-		//loadItems();
 	}
 
 	@Override

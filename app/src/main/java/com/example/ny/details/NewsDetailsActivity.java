@@ -10,43 +10,66 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.ny.R;
 
+import com.example.ny.data.ConverterData;
 import com.example.ny.data.ImageType;
 import com.example.ny.data.NewsItem;
+import com.example.ny.database.AppDatabase;
+import com.example.ny.database.NewsEntity;
+import com.example.ny.utils.Utils;
 
 public class NewsDetailsActivity extends AppCompatActivity {
     private static final String EXTRA_NEWS_ITEM = "extra:newsItem";
+    private AppDatabase db;
+    private Toolbar toolbar;
+
+    private NewsItem detailNews;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_details);
 
-        final NewsItem newsItem = (NewsItem) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
+        final int newsId = getIntent().getIntExtra(EXTRA_NEWS_ITEM, 0);
+        db = AppDatabase.getInstance(getApplicationContext());
 
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setTitle(newsItem.getSection());
+        NewsEntity newsEntity = db.newsDao().getNewsByID(newsId);
+        if (newsEntity != null){
+            detailNews = ConverterData.fromDatabase(newsEntity);
+        }else{
+            //error
+        }
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        final ActionBar toolbar = getSupportActionBar();
+        if (toolbar != null) {
+            toolbar.setDisplayHomeAsUpEnabled(true);
+            toolbar.setTitle(detailNews.getTitle());
         }
 
         final ImageView imageView = findViewById(R.id.details_image);
         final TextView titleView = findViewById(R.id.details_title);
         final TextView dateView = findViewById(R.id.details_date);
-        final TextView textView = findViewById(R.id.details_text);
+        final TextView sectionView = findViewById(R.id.section);
+        final TextView details_text = findViewById(R.id.details_text);
 
         Glide.with(this)
-                .load(newsItem.getImageByType(ImageType.THUMBLARGE))
+                .load(detailNews.getImageByType(ImageType.THUMBLARGE))
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView);
 
-        titleView.setText(newsItem.getTitle());
-        //textView.setText(newsItem.getFullText());
-        dateView.setText(newsItem.getPublishedDate());
+        titleView.setText(detailNews.getTitle());
+        dateView.setText(Utils.ConvertToPubFormat(detailNews.getPublishedDate()));
+        sectionView.setText(detailNews.getSection());
+        details_text.setText(detailNews.getPreviewText());
     }
 
     @Override
@@ -55,7 +78,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    public static void start(@NonNull Context context, @NonNull NewsItem newsItem) {
-        //context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, newsItem));
+    public static void start(@NonNull Context context, @NonNull int id) {
+        context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, id));
     }
 }

@@ -25,6 +25,7 @@ public class ConverterData {
 
 	public static NewsItem fromDatabase(@NotNull NewsEntity newsEntity){
 		NewsItem newsItem = new NewsItem();
+		newsItem.setId(newsEntity.getId());
 		newsItem.setTitle(newsEntity.getTitle());
 		newsItem.setSection(newsEntity.getSection());
 		newsItem.setPreviewText(newsEntity.getPreviewText());
