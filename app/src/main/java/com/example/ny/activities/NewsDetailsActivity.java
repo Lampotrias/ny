@@ -1,4 +1,4 @@
-package com.example.ny.details;
+package com.example.ny.activities;
 
 import android.content.Context;
 import android.content.Intent;

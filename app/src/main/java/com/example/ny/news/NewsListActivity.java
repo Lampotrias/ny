@@ -1,5 +1,6 @@
 package com.example.ny.news;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,12 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ny.R;
+import com.example.ny.activities.AboutActivity;
 import com.example.ny.data.ConverterData;
 import com.example.ny.data.NewsItem;
 import com.example.ny.data.NewsResponse;
 import com.example.ny.database.AppDatabase;
 import com.example.ny.database.NewsEntity;
-import com.example.ny.details.NewsDetailsActivity;
+import com.example.ny.activities.NewsDetailsActivity;
 import com.example.ny.network.INewsEndPoint;
 import com.example.ny.network.RestApi;
 import com.example.ny.utils.Utils;
@@ -157,8 +159,8 @@ public class NewsListActivity extends AppCompatActivity {
 	@Override
 	public boolean onOptionsItemSelected ( MenuItem item ) {
 		switch ( item.getItemId () ) {
-			//case R.id.about_activity:
-			// startActivity ( new Intent( this , AboutActivity.class ) );
+			case R.id.about_activity:
+			 startActivity ( new Intent( this , AboutActivity.class) );
 			default:
 				return super.onOptionsItemSelected ( item );
 		}
