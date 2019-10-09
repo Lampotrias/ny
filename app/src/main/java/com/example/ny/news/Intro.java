@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import me.relex.circleindicator.CircleIndicator;
 
 public class Intro extends AppCompatActivity {
 
@@ -39,11 +40,11 @@ public class Intro extends AppCompatActivity {
 		SharedPreferences.Editor editor = sharedPref.edit();
 
 		int bNeedIntro = sharedPref.getInt(DATA_KEY, 2);
-
+		bNeedIntro = 2;
 		if (bNeedIntro > 1){
 			setContentView(R.layout.activity_intro);
 			Disposable disposable = Completable.complete()
-					.delay(2, TimeUnit.SECONDS)
+					.delay(100, TimeUnit.SECONDS)
 					.subscribe(this::StartMainActivity);
 			compositeDisposable.add(disposable);
 			editor.putInt(DATA_KEY, 1);
@@ -57,6 +58,9 @@ public class Intro extends AppCompatActivity {
 		mPager = findViewById(R.id.pager);
 		pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
 		mPager.setAdapter(pagerAdapter);
+
+		CircleIndicator indicator = findViewById(R.id.indicator);
+		indicator.setViewPager(mPager);
 
 	}
 
