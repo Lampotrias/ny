@@ -8,25 +8,24 @@
     android:background="@color/colorPrimary"
     tools:context=".news.Intro">
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
         android:layout_margin="80dp"
         android:contentDescription="TODO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/intro1" />
+        android:layout_height="0dp"
+        android:layout_width="0dp" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text=""
+        android:layout_marginBottom="30dp"
+        android:text="WELCOME"
         android:textColor="@android:color/white"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
