@@ -5,10 +5,20 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class NewsItem {
+
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
     @SerializedName("section")
     private String section;
-
-
 
     private String imageUrl = "";
 

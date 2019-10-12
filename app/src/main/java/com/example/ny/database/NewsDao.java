@@ -21,6 +21,9 @@ public interface NewsDao {
 	@Query("SELECT * FROM news WHERE id = :id")
 	NewsEntity getNewsByID(int id);
 
+	@Query("SELECT * FROM news WHERE section LIKE :section")
+	Flowable<List<NewsEntity>> getBySectionName(String section);
+
 	@Insert (onConflict = OnConflictStrategy.REPLACE)
 	void insertAll(List<NewsEntity> newsEntities);
 

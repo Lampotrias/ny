@@ -1,11 +1,13 @@
 package com.example.ny.news;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -20,12 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ny.R;
+import com.example.ny.activities.AboutActivity;
 import com.example.ny.data.ConverterData;
 import com.example.ny.data.NewsItem;
 import com.example.ny.data.NewsResponse;
 import com.example.ny.database.AppDatabase;
 import com.example.ny.database.NewsEntity;
-import com.example.ny.details.NewsDetailsActivity;
+import com.example.ny.activities.NewsDetailsActivity;
 import com.example.ny.network.INewsEndPoint;
 import com.example.ny.network.RestApi;
 import com.example.ny.utils.Utils;
@@ -71,7 +74,9 @@ public class NewsListActivity extends AppCompatActivity {
 		error = findViewById(R.id.error_layout);
 		errorAction = findViewById(R.id.action_button);
 
-		adapter = new NewsAdapter(this, newsItem -> NewsDetailsActivity.start(this, newsItem));
+		adapter = new NewsAdapter(this, id  -> {
+			NewsDetailsActivity.start(this, id);
+		});
 
 		if (recycler != null) {
 			recycler.setAdapter(adapter);
@@ -84,11 +89,8 @@ public class NewsListActivity extends AppCompatActivity {
 		}
 
 		floatingReloadButton = findViewById(R.id.floatReload);
-		floatingReloadButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				loadItems();
-			}
+		floatingReloadButton.setOnClickListener(v -> {
+			loadItems();
 		});
 
 		if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
@@ -103,8 +105,8 @@ public class NewsListActivity extends AppCompatActivity {
 	protected void onStart() {
 		super.onStart();
 
+		Utils.setVisible(error, false);
 		disposables = new CompositeDisposable();
-		//loadItems();
 	}
 
 	@Override
@@ -134,13 +136,13 @@ public class NewsListActivity extends AppCompatActivity {
 
 			spinner.setSelection(0);
 
-			/*spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 				@Override
 				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 					if (position > 0){
-						//loadItemsByCategory(Utils.GetCategoryNameByID(position));
+						loadItemsByCategory(Utils.GetCategoryNameByID(position));
 					}else{
-						//loadItems();
+
 					}
 				}
 
@@ -148,7 +150,7 @@ public class NewsListActivity extends AppCompatActivity {
 				public void onNothingSelected(AdapterView<?> parent) {
 
 				}
-			});*/
+			});
 		}
 
 		return true;
@@ -157,8 +159,8 @@ public class NewsListActivity extends AppCompatActivity {
 	@Override
 	public boolean onOptionsItemSelected ( MenuItem item ) {
 		switch ( item.getItemId () ) {
-			//case R.id.about_activity:
-			// startActivity ( new Intent( this , AboutActivity.class ) );
+			case R.id.about_activity:
+			 startActivity ( new Intent( this , AboutActivity.class) );
 			default:
 				return super.onOptionsItemSelected ( item );
 		}
@@ -196,20 +198,17 @@ public class NewsListActivity extends AppCompatActivity {
 					.map(ConverterData::fromDatabaseToList)
 					.subscribeOn(Schedulers.io())
 					.observeOn(AndroidSchedulers.mainThread())
-					.subscribe(adapter::replaceItems, this::handleError));
+					.subscribe(this::updateItems, this::handleError));
 		}
-
-		Utils.setVisible(recycler, true);
-		Utils.setVisible(progress, false);
-		Utils.setVisible(error, false);
 	}
 
 	private void loadItemsByCategory(String categoryName) {
 		showProgress(true);
-		INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
 
-		disposables.add(endPoint.getNewsByCategory(categoryName)
-				.map(newsResponse -> newsResponse.getResults())
+		AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+
+		disposables.add(db.newsDao().getBySectionName(categoryName)
+				.map(ConverterData::fromDatabaseToList)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(this::updateItems, this::handleError)

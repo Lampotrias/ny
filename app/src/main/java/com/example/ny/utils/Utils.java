@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 
 import com.example.ny.BuildConfig;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.reactivex.disposables.Disposable;
@@ -30,6 +32,18 @@ public class Utils {
                 5 * DAY_IN_MILLIS,
                 FORMAT_ABBREV_RELATIVE
         );
+    }
+
+    public static String ConvertToPubFormat(String string){
+        SimpleDateFormat oldFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        SimpleDateFormat newFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        try {
+            Date date = oldFormat.parse(string);
+            return newFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static void disposeSafe(@Nullable Disposable disposable) {
@@ -60,7 +74,6 @@ public class Utils {
             return "All";
         }
     }
-
 
     private Utils() {
         throw new AssertionError("No instances");
