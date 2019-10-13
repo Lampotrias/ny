@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".news.NewsListActivity"></activity>
-        <activity android:name=".activities.NewsDetailsActivity" />
+        <activity android:name=".activities.NewsDetailsFragment" />
     </application>
 
 </manifest>

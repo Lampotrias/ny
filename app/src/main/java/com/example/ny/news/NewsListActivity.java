@@ -28,7 +28,7 @@ import com.example.ny.data.NewsItem;
 import com.example.ny.data.NewsResponse;
 import com.example.ny.database.AppDatabase;
 import com.example.ny.database.NewsEntity;
-import com.example.ny.activities.NewsDetailsActivity;
+import com.example.ny.activities.NewsDetailsFragment;
 import com.example.ny.network.INewsEndPoint;
 import com.example.ny.network.RestApi;
 import com.example.ny.utils.Utils;
@@ -75,7 +75,7 @@ public class NewsListActivity extends AppCompatActivity {
 		errorAction = findViewById(R.id.action_button);
 
 		adapter = new NewsAdapter(this, id  -> {
-			NewsDetailsActivity.start(this, id);
+			NewsDetailsFragment.start(this, id);
 		});
 
 		if (recycler != null) {
