@@ -26,7 +26,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".activities.NewsListActivity" />
-        <activity android:name=".activities.NewsDetailsActivity" />
+        <activity android:name=".activities.NewsDetailsFragment" />
     </application>
 
 </manifest>
