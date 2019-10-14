@@ -1,4 +1,4 @@
-package com.example.ny.news;
+package com.example.ny.activities;
 
 import android.graphics.Rect;
 import android.view.View;

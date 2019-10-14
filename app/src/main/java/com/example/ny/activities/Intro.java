@@ -1,9 +1,8 @@
-package com.example.ny.news;
+package com.example.ny.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,7 +12,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.ny.R;
-import com.example.ny.activities.ScreenSlidePageFragment;
 
 import java.util.concurrent.TimeUnit;
 
@@ -65,7 +63,7 @@ public class Intro extends AppCompatActivity {
 	}
 
 	private void StartMainActivity(){
-		startActivity(new Intent(this, NewsListActivity.class));
+		//startActivity(new Intent(this, NewsListActivity.class));
 	}
 
 	@Override

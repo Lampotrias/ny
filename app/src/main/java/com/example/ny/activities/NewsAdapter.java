@@ -1,4 +1,4 @@
-package com.example.ny.news;
+package com.example.ny.activities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,8 +23,6 @@ import com.example.ny.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.internal.Util;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 

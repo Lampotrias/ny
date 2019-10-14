@@ -78,7 +78,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    public static void start(@NonNull Context context, @NonNull int id) {
-        context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, id));
+    public static void start() {
+       // context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, id));
     }
 }
