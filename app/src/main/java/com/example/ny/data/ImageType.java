@@ -4,7 +4,7 @@ public enum ImageType {
 	STANDART_THUMBNAIL("Standard Thumbnail"),
 	THUMBLARGE("thumbLarge");
 
-	private String strType;
+	private final String strType;
 	ImageType(String strType) {
 		this.strType=strType;
 	}

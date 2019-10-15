@@ -11,7 +11,7 @@
         android:layout_height="200dp"
         android:contentDescription="@string/cont_descr_decoration"
         android:src="@drawable/vec_error"
-        android:tint="@color/xxlight_gray"/>
+        android:tint="@color/light_gray"/>
 
     <TextView
         android:layout_width="wrap_content"

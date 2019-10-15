@@ -1,7 +1,5 @@
 package com.example.ny.data;
 
-import android.util.Log;
-
 import com.example.ny.database.NewsEntity;
 
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +9,7 @@ import java.util.List;
 
 public class ConverterData {
 
-	public static NewsEntity toDatabase(@NotNull NewsItem newsItem){
+	private static NewsEntity toDatabase(@NotNull NewsItem newsItem){
 		NewsEntity newsEntity = new NewsEntity();
 		newsEntity.setTitle(newsItem.getTitle());
 		newsEntity.setSection(newsItem.getSection());

@@ -2,6 +2,8 @@ package com.example.ny.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 public class RelatedUrlsItem {
 
 	@SerializedName("suggested_link_text")
@@ -26,6 +28,7 @@ public class RelatedUrlsItem {
 		return url;
 	}
 
+	@NotNull
 	@Override
 	public String toString() {
 		return

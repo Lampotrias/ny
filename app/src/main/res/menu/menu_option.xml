@@ -6,10 +6,12 @@
         android:id="@+id/action_bar_spinner"
         app:showAsAction="always"
         android:title="@string/select_category"
-        app:actionViewClass="android.widget.Spinner" />
+        app:actionViewClass="android.widget.Spinner"
+        android:orderInCategory="3"/>
 
     <item
         android:id="@+id/about_activity"
-        android:title="@string/about_screen" />
+        android:title="@string/about_screen"
+        android:orderInCategory="4"/>
 
 </menu>

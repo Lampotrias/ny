@@ -1,4 +1,4 @@
-package com.example.ny;
+package com.example.ny.utils;
 
 
 import java.util.List;

@@ -24,7 +24,7 @@ import com.example.ny.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder> {
 
     private final List<NewsItem> items = new ArrayList<>();
 
@@ -33,7 +33,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Nullable
     private final OnItemClickListener clickListener;
 
-    public NewsAdapter(Context context, @Nullable OnItemClickListener clickListener) {
+    public NewsListAdapter(Context context, @Nullable OnItemClickListener clickListener) {
         this.inflater = LayoutInflater.from(context);
         this.clickListener = clickListener;
 
@@ -67,7 +67,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(@NonNull int id);
+        void onItemClick(int id);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

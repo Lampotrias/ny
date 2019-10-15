@@ -1,7 +1,5 @@
 package com.example.ny.utils;
 
-import android.content.Context;
-import android.text.format.DateUtils;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -11,12 +9,9 @@ import com.example.ny.BuildConfig;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import io.reactivex.disposables.Disposable;
-
-import static android.text.format.DateUtils.DAY_IN_MILLIS;
-import static android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE;
-import static android.text.format.DateUtils.HOUR_IN_MILLIS;
 
 public class Utils {
 
@@ -24,22 +19,16 @@ public class Utils {
             "movies", "national", "nyregion", "obituaries", "opinion", "politics", "realestate", "science", "sports", "sundayreview", "technology",
             "theater", "tmagazine", "travel", "upshot"};
 
-    public static CharSequence formatDateTime(Context context, Date dateTime) {
-        return DateUtils.getRelativeDateTimeString(
-                context,
-                dateTime.getTime(),
-                HOUR_IN_MILLIS,
-                5 * DAY_IN_MILLIS,
-                FORMAT_ABBREV_RELATIVE
-        );
-    }
-
     public static String ConvertToPubFormat(String string){
-        SimpleDateFormat oldFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-        SimpleDateFormat newFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        SimpleDateFormat oldFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
+        SimpleDateFormat newFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
         try {
             Date date = oldFormat.parse(string);
-            return newFormat.format(date);
+            if (date != null){
+                return newFormat.format(date);
+            }else {
+                throw new ParseException("date is null", 0);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
             return "";

@@ -1,12 +1,10 @@
 package com.example.ny.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,13 +12,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.ny.R;
 
-public class ScreenSlidePageFragment extends Fragment {
+public class IntroSliderFragment extends Fragment {
 
 	private int resId;
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		resId = getArguments().getInt("PAGE", 1);
+		if (getArguments() != null) {
+			resId = getArguments().getInt("PAGE", 1);
+		}
 	}
 
 	@Nullable
@@ -33,11 +33,11 @@ public class ScreenSlidePageFragment extends Fragment {
 		return rootView;
 	}
 
-	public static ScreenSlidePageFragment newInstance(int resId){
-		ScreenSlidePageFragment screenSlidePageFragment = new ScreenSlidePageFragment();
+	public static IntroSliderFragment newInstance(int resId){
+		IntroSliderFragment introSliderFragment = new IntroSliderFragment();
 		Bundle args = new Bundle();
 		args.putInt("PAGE", resId);
-		screenSlidePageFragment.setArguments(args);
-		return screenSlidePageFragment;
+		introSliderFragment.setArguments(args);
+		return introSliderFragment;
 	}
 }

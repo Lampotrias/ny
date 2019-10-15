@@ -2,6 +2,8 @@ package com.example.ny.network;
 
 import androidx.annotation.NonNull;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -24,6 +26,7 @@ class ApiKeyInterceptor implements Interceptor{
     }
 
 
+    @NotNull
     @Override
     public Response intercept(@NonNull Interceptor.Chain chain) throws IOException {
         final Request requestWithoutApiKey = chain.request();

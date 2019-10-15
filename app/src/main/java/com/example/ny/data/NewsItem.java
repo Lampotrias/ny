@@ -2,6 +2,8 @@ package com.example.ny.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class NewsItem {
@@ -70,7 +72,7 @@ public class NewsItem {
         return title;
     }
 
-    public List<MultimediaItem> getMultimedia() {
+    private List<MultimediaItem> getMultimedia() {
         return multimedia;
     }
 
@@ -93,6 +95,7 @@ public class NewsItem {
         }
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "NewsItem{" +

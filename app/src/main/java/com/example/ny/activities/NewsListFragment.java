@@ -1,7 +1,6 @@
 package com.example.ny.activities;
 
-import android.content.Context;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +36,8 @@ import com.example.ny.network.RestApi;
 import com.example.ny.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -46,15 +47,15 @@ import io.reactivex.schedulers.Schedulers;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
-public class NewListFragments extends Fragment {
+public class NewsListFragment extends Fragment {
 
-	public static final String TAG = NewListFragments.class.getSimpleName();
+	private static final String TAG = NewsListFragment.class.getSimpleName();
 
 	private CompositeDisposable disposables;
 	@Nullable
 	private ProgressBar progress;
 	@Nullable private RecyclerView recycler;
-	@Nullable private NewsAdapter adapter;
+	@Nullable private NewsListAdapter adapter;
 
 	private AppCompatActivity context;
 	@Nullable private View error;
@@ -67,39 +68,50 @@ public class NewListFragments extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		disposables = new CompositeDisposable();
 		context = ((AppCompatActivity)getActivity());
+		setHasOptionsMenu(true);
 	}
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.activity_news_list, container, false);
+		View view = inflater.inflate(R.layout.fragment_news_list, container, false);
 
 		toolbar = view.findViewById(R.id.toolbar);
-
-		context.setSupportActionBar(toolbar);
+		if (toolbar != null){
+			toolbar.setTitle("NY Times");
+			context.setSupportActionBar(toolbar);
+		}
 
 		progress = view.findViewById(R.id.progress);
 		recycler = view.findViewById(R.id.recycler);
 		error = view.findViewById(R.id.error_layout);
 		errorAction = view.findViewById(R.id.action_button);
 
-		adapter = new NewsAdapter(context, id  -> NewsDetailsActivity.start());
+		adapter = new NewsListAdapter(context, id -> {
+			NewsDetailsFragment newsDetailsFragment = NewsDetailsFragment.newInstance(id);
+
+			context.getSupportFragmentManager()
+					.beginTransaction()
+					.addToBackStack(null)
+					.add(R.id.main_frame, newsDetailsFragment)
+					.commit();
+		});
 
 		if (recycler != null) {
 			recycler.setAdapter(adapter);
 			recycler.addItemDecoration(new NewsItemDecoration(getResources().getDimensionPixelSize(R.dimen.spacing_micro)));
+			//`FirstLoadFromDatabase();
 		}
 
-
 		if (errorAction != null) {
-			errorAction.setOnClickListener(item -> loadItems());
+			errorAction.setOnClickListener(item -> LoadNewsFromNetwork());
 		}
 
 		floatingReloadButton = view.findViewById(R.id.floatReload);
 		floatingReloadButton.setOnClickListener(v -> {
-			loadItems();
+			LoadNewsFromNetwork();
 		});
 
 		if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
@@ -117,16 +129,13 @@ public class NewListFragments extends Fragment {
 		super.onStart();
 
 		Utils.setVisible(error, false);
-		disposables = new CompositeDisposable();
+
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		showProgress(false);
-
-		Utils.disposeSafe(disposables);
-		disposables = null;
 	}
 
 	@Override
@@ -135,9 +144,11 @@ public class NewListFragments extends Fragment {
 		adapter = null;
 		recycler = null;
 		progress = null;
+		Utils.disposeSafe(disposables);
+		disposables = null;
 	}
 
-	private void loadItems() {
+	private void LoadNewsFromNetwork() {
 		showProgress(true);
 		INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
 		disposables.add(endPoint.getNews()
@@ -164,6 +175,18 @@ public class NewListFragments extends Fragment {
 		}
 	}
 
+	private void FirstLoadFromDatabase() {
+		AppDatabase db = AppDatabase.getInstance(context);
+
+		if (adapter != null) {
+			disposables.add(db.newsDao().getAllFromDatabase()
+					.map(ConverterData::fromDatabaseToList)
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(this::updateItems, this::handleError));
+		}
+	}
+
 	private void loadItemsByCategory(String categoryName) {
 		showProgress(true);
 
@@ -177,7 +200,7 @@ public class NewListFragments extends Fragment {
 		);
 	}
 
-	private void updateItems(@Nullable List<NewsItem> news) {
+	private void updateItems(@NotNull List<NewsItem> news) {
 		if (adapter != null) {
 			adapter.replaceItems(news);
 		}
@@ -200,5 +223,41 @@ public class NewListFragments extends Fragment {
 		Utils.setVisible(progress, shouldShow);
 		Utils.setVisible(recycler, !shouldShow);
 		Utils.setVisible(error, !shouldShow);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+		inflater.inflate(R.menu.menu_option, menu);
+
+		mSpinnerItem = menu.findItem( R.id.action_bar_spinner);
+		View view = mSpinnerItem.getActionView();
+
+		if (view instanceof Spinner){
+			final Spinner spinner = (Spinner) view;
+
+			ArrayAdapter<String> spinnerAdapter  =  new  ArrayAdapter<>(context, R.layout.spinner_layout, Utils.GetCategoryArray());
+
+			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(spinnerAdapter);
+
+			spinner.setSelection(0);
+
+			spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+					if (position > 0){
+						loadItemsByCategory(Utils.GetCategoryNameByID(position));
+					}else{
+						FirstLoadFromDatabase();
+					}
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> parent) {
+
+				}
+			});
+		}
 	}
 }

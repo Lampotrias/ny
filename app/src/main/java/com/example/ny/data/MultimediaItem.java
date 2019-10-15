@@ -4,7 +4,7 @@ package com.example.ny.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MultimediaItem {
+class MultimediaItem {
 
     @SerializedName("url")
     @Expose

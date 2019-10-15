@@ -1,9 +1,9 @@
 package com.example.ny.activities;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,7 +15,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -35,12 +34,19 @@ public class NewsDetailsFragment extends Fragment {
     private Toolbar toolbar;
     private NewsItem detailNews;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_details, container, false);
 
-        newsId = getActivity().getIntent().getIntExtra(EXTRA_NEWS_ITEM, 0);
+        if (getArguments() != null){
+            newsId = getArguments().getInt(EXTRA_NEWS_ITEM, 0);
+        }
         db = AppDatabase.getInstance(getActivity().getApplicationContext());
 
         NewsEntity newsEntity = db.newsDao().getNewsByID(newsId);
@@ -78,7 +84,24 @@ public class NewsDetailsFragment extends Fragment {
         return view;
     }
 
-    public static void start(@NonNull Context context, @NonNull int id) {
-        context.startActivity(new Intent(context, NewsDetailsFragment.class).putExtra(EXTRA_NEWS_ITEM, id));
+    public static NewsDetailsFragment newInstance(final int _id){
+        NewsDetailsFragment newsDetailsFragment = new NewsDetailsFragment();
+        Bundle args = new Bundle();
+        args.putInt(EXTRA_NEWS_ITEM, _id);
+        newsDetailsFragment.setArguments(args);
+        return newsDetailsFragment;
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_detail_fragment, menu);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
 }

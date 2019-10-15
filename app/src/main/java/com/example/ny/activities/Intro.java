@@ -13,6 +13,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.ny.R;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
@@ -22,10 +24,10 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class Intro extends AppCompatActivity {
 
-	private CompositeDisposable compositeDisposable = new CompositeDisposable();
+	private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-	public static final String SHARED_PREF_NAME = "MY_SHARED_PREF";
-	public static final String DATA_KEY = "NEED_INTRO";
+	private static final String SHARED_PREF_NAME = "MY_SHARED_PREF";
+	private static final String DATA_KEY = "NEED_INTRO";
 
 	private ViewPager mPager;
 	private PagerAdapter pagerAdapter;
@@ -34,36 +36,36 @@ public class Intro extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+
 		SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 
-		int bNeedIntro = sharedPref.getInt(DATA_KEY, 2);
-		bNeedIntro = 2;
-		if (bNeedIntro > 1){
+		boolean bNeedIntro = sharedPref.getBoolean(DATA_KEY, true);
+
+		if (bNeedIntro){
 			setContentView(R.layout.activity_intro);
 			Disposable disposable = Completable.complete()
-					.delay(100, TimeUnit.SECONDS)
+					.delay(5, TimeUnit.SECONDS)
 					.subscribe(this::StartMainActivity);
 			compositeDisposable.add(disposable);
-			editor.putInt(DATA_KEY, 1);
-		}else{
-			editor.putInt(DATA_KEY, ++bNeedIntro);
+			editor.putBoolean(DATA_KEY, false);
 			editor.apply();
-			this.StartMainActivity();
+
+			mPager = findViewById(R.id.pager);
+			pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+			mPager.setAdapter(pagerAdapter);
+
+			CircleIndicator indicator = findViewById(R.id.indicator);
+			indicator.setViewPager(mPager);
+		}else{
+			editor.putBoolean(DATA_KEY, true);
+			editor.apply();
+			StartMainActivity();
 		}
-		editor.apply();
-
-		mPager = findViewById(R.id.pager);
-		pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-		mPager.setAdapter(pagerAdapter);
-
-		CircleIndicator indicator = findViewById(R.id.indicator);
-		indicator.setViewPager(mPager);
-
 	}
 
 	private void StartMainActivity(){
-		//startActivity(new Intent(this, NewsListActivity.class));
+		startActivity(new Intent(this, MainActivity.class));
 	}
 
 	@Override
@@ -71,26 +73,24 @@ public class Intro extends AppCompatActivity {
 		super.onStop();
 		compositeDisposable.dispose();
 	}
-	/////////////////////////////////////////////////////////////
 
 	private static class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-		private static int NUM_ITEMS = 3;
+		private final static int NUM_ITEMS = 3;
 
-		public ScreenSlidePagerAdapter(FragmentManager fragmentManager) {
-			super(fragmentManager);
+		ScreenSlidePagerAdapter(FragmentManager fragmentManager) {
+			super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 		}
 
+		@NotNull
 		@Override
 		public Fragment getItem(int position) {
 			switch (position){
 				case 0:
-					return ScreenSlidePageFragment.newInstance(R.drawable.intro1);
+					return IntroSliderFragment.newInstance(R.drawable.intro1);
 				case 1:
-					return ScreenSlidePageFragment.newInstance(R.drawable.intro2);
+					return IntroSliderFragment.newInstance(R.drawable.intro2);
 				case 2:
-					return ScreenSlidePageFragment.newInstance(R.drawable.intro3);
-					default:
-						return null;
+					return IntroSliderFragment.newInstance(R.drawable.intro3);
 			}
 		}
 
