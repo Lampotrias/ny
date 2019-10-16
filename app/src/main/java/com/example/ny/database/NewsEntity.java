@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import org.jetbrains.annotations.NotNull;
+
 @Entity(tableName = "news")
 public class NewsEntity {
 
@@ -29,13 +31,20 @@ public class NewsEntity {
 	private String section;
 
 	@NonNull
-	@ColumnInfo(name = "image_link")
-	private String imageLink;
+	@ColumnInfo(name = "image_prev_url")
+	private String imagePrevUrl;
+
+	@NonNull
+	@ColumnInfo(name = "image_detail_url")
+	private String imageDetailUrl;
 
 	@NonNull
 	@ColumnInfo(name = "date_create")
 	private String dateCreate;
 
+	@NotNull
+	@ColumnInfo(name = "detail_url")
+	private String detailUrl;
 
 	public int getId() {
 		return id;
@@ -54,6 +63,15 @@ public class NewsEntity {
 
 	public void setTitle(@NonNull String title) {
 		this.title = title;
+	}
+
+	@NotNull
+	public String getDetailUrl() {
+		return detailUrl;
+	}
+
+	public void setDetailUrl(@NotNull String detailUrl) {
+		this.detailUrl = detailUrl;
 	}
 
 	@NonNull
@@ -84,12 +102,21 @@ public class NewsEntity {
 	}
 
 	@NonNull
-	public String getImageLink() {
-		return imageLink;
+	public String getImagePrevUrl() {
+		return imagePrevUrl;
 	}
 
-	public void setImageLink(@NonNull String imageLink) {
-		this.imageLink = imageLink;
+	public void setImagePrevUrl(@NonNull String imagePrevUrl) {
+		this.imagePrevUrl = imagePrevUrl;
+	}
+
+	@NonNull
+	public String getImageDetailUrl() {
+		return imageDetailUrl;
+	}
+
+	public void setImageDetailUrl(@NonNull String imageDetailUrl) {
+		this.imageDetailUrl = imageDetailUrl;
 	}
 
 	@NonNull
@@ -109,7 +136,6 @@ public class NewsEntity {
 				", previewText='" + previewText + '\'' +
 				", fullText='" + fullText + '\'' +
 				", section='" + section + '\'' +
-				", imageLink='" + imageLink + '\'' +
 				", dateCreate='" + dateCreate + '\'' +
 				'}';
 	}

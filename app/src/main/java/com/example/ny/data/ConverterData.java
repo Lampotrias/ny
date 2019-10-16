@@ -15,9 +15,10 @@ public class ConverterData {
 		newsEntity.setSection(newsItem.getSection());
 		newsEntity.setPreviewText(newsItem.getPreviewText());
 		newsEntity.setFullText(newsItem.getPreviewText());
-		newsEntity.setImageLink(newsItem.getImageByType(ImageType.STANDART_THUMBNAIL));
+		newsEntity.setImagePrevUrl(newsItem.getImagePrevUrl());
+		newsEntity.setImageDetailUrl(newsItem.getImageDetailUrl());
 		newsEntity.setDateCreate(newsItem.getPublishedDate());
-
+		newsEntity.setDetailUrl(newsItem.getShortUrl());
 		return newsEntity;
 	}
 
@@ -28,8 +29,10 @@ public class ConverterData {
 		newsItem.setSection(newsEntity.getSection());
 		newsItem.setPreviewText(newsEntity.getPreviewText());
 		newsItem.setPreviewText(newsEntity.getPreviewText());
-		newsItem.setImageUrl(newsEntity.getImageLink());
+		newsItem.setImagePrevUrl(newsEntity.getImagePrevUrl());
+		newsItem.setImageDetailUrl(newsEntity.getImageDetailUrl());
 		newsItem.setPublishedDate(newsEntity.getDateCreate());
+		newsItem.setShortUrl(newsEntity.getDetailUrl());
 		return newsItem;
 	}
 	public static List<NewsEntity> fromListToDatabase(@NotNull List<NewsItem> newsItemList){

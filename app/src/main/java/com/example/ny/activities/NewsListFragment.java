@@ -163,8 +163,16 @@ public class NewsListFragment extends Fragment {
 	private void OnResponseHandler(List<NewsEntity> newsEntities) {
 		AppDatabase db = AppDatabase.getInstance(context);
 
-		db.newsDao().deleteAll();
-		db.newsDao().insertAll(newsEntities);
+
+		disposables.add(db.newsDao().deleteAll()
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe());
+
+		disposables.add(db.newsDao().insertAll(newsEntities)
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe());
 
 		if (adapter != null) {
 			disposables.add(db.newsDao().getAllFromDatabase()

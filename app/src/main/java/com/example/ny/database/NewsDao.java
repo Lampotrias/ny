@@ -8,6 +8,7 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 @Dao
@@ -19,13 +20,13 @@ public interface NewsDao {
 	Flowable<List<NewsEntity>> getAllFromDatabase();
 
 	@Query("SELECT * FROM news WHERE id = :id")
-	NewsEntity getNewsByID(int id);
+	Flowable <NewsEntity> getNewsByID(int id);
 
 	@Query("SELECT * FROM news WHERE section LIKE :section")
 	Flowable<List<NewsEntity>> getBySectionName(String section);
 
 	@Insert (onConflict = OnConflictStrategy.REPLACE)
-	void insertAll(List<NewsEntity> newsEntities);
+	Completable insertAll(List<NewsEntity> newsEntities);
 
 	@Insert (onConflict = OnConflictStrategy.REPLACE)
 	void insert(NewsEntity newsEntities);
@@ -34,7 +35,7 @@ public interface NewsDao {
 	void delete (NewsEntity newsEntities);
 
 	@Query("DELETE FROM news")
-	void deleteAll();
+	Completable deleteAll();
 
 
 }

@@ -92,6 +92,7 @@ public class Intro extends AppCompatActivity {
 				case 2:
 					return IntroSliderFragment.newInstance(R.drawable.intro3);
 			}
+			return IntroSliderFragment.newInstance(R.drawable.intro1);
 		}
 
 		@Override

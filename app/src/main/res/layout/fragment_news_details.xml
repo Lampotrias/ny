@@ -76,7 +76,16 @@
                 android:layout_margin="@dimen/spacing_normal"
                 android:lineSpacingExtra="4sp"
                 android:textAppearance="@style/TextAppearance.Details.Text"
-                tools:text="tools:sample/lorem\nsdfgs\nsdfgs" />
+                tools:text="@tools:sample/lorem/random" />
+            <TextView
+                android:id="@+id/details_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_normal"
+                android:lineSpacingExtra="4sp"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.Details.Text"
+                tools:text="@tools:sample/us_phones" />
         </LinearLayout>
     </ScrollView>
 

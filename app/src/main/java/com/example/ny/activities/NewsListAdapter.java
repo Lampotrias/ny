@@ -17,7 +17,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ny.R;
 
-import com.example.ny.data.ImageType;
 import com.example.ny.data.NewsItem;
 import com.example.ny.utils.Utils;
 
@@ -94,7 +93,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         }
 
         void bind(NewsItem newsItem) {
-            imageLoader.load(newsItem.getImageByType(ImageType.STANDART_THUMBNAIL))
+            imageLoader.load(newsItem.getImagePrevUrl())
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
             categoryView.setText(newsItem.getSection());

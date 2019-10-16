@@ -1,6 +1,7 @@
 package com.example.ny.activities;
 
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,22 +23,34 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.ny.R;
 
 import com.example.ny.data.ConverterData;
-import com.example.ny.data.ImageType;
 import com.example.ny.data.NewsItem;
 import com.example.ny.database.AppDatabase;
-import com.example.ny.database.NewsEntity;
 import com.example.ny.utils.Utils;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class NewsDetailsFragment extends Fragment {
     private static final String EXTRA_NEWS_ITEM = "extra:newsItem";
+    private CompositeDisposable disposables;
     private int newsId;
     private AppDatabase db;
     private Toolbar toolbar;
-    private NewsItem detailNews;
+
+    private TextView detail_url;
+    private TextView titleView;
+    private TextView dateView;
+    private TextView sectionView;
+    private TextView details_text;
+    private ImageView imageView;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        disposables = new CompositeDisposable();
     }
 
     @Nullable
@@ -44,44 +58,56 @@ public class NewsDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_details, container, false);
 
+        toolbar = view.findViewById(R.id.toolbar);
+        imageView = view.findViewById(R.id.details_image);
+        titleView = view.findViewById(R.id.details_title);
+        dateView = view.findViewById(R.id.details_date);
+        sectionView = view.findViewById(R.id.section);
+        details_text = view.findViewById(R.id.details_text);
+        detail_url = view.findViewById(R.id.details_url);
+
         if (getArguments() != null){
             newsId = getArguments().getInt(EXTRA_NEWS_ITEM, 0);
         }
-        db = AppDatabase.getInstance(getActivity().getApplicationContext());
-
-        NewsEntity newsEntity = db.newsDao().getNewsByID(newsId);
-        if (newsEntity != null){
-            detailNews = ConverterData.fromDatabase(newsEntity);
-        }else{
-            return view;
+        else{
+            newsNotFound(new Throwable());
         }
 
-        toolbar = view.findViewById(R.id.toolbar);
+        AppDatabase db = AppDatabase.getInstance(getActivity());
+        disposables.add(db.newsDao().getNewsByID(newsId)
+                .map(ConverterData::fromDatabase)
+                .filter(newsItem -> newsItem != null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::showNews, this::newsNotFound)
+        );
+
+        return view;
+    }
+
+    private void newsNotFound(Throwable throwable) {
+        Toast.makeText(getActivity(), "News not found: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void showNews(NewsItem newsItem)
+    {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
         final ActionBar toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (toolbar != null) {
             toolbar.setDisplayHomeAsUpEnabled(true);
-            toolbar.setTitle(detailNews.getTitle());
+            toolbar.setTitle(newsItem.getTitle());
         }
-
-        final ImageView imageView = view.findViewById(R.id.details_image);
-        final TextView titleView = view.findViewById(R.id.details_title);
-        final TextView dateView = view.findViewById(R.id.details_date);
-        final TextView sectionView = view.findViewById(R.id.section);
-        final TextView details_text = view.findViewById(R.id.details_text);
-
+        titleView.setText(newsItem.getTitle());
+        dateView.setText(Utils.ConvertToPubFormat(newsItem.getPublishedDate()));
+        sectionView.setText(newsItem.getSection());
+        details_text.setText(newsItem.getPreviewText());
+        detail_url.setMovementMethod(LinkMovementMethod.getInstance());
+        detail_url.setText(newsItem.getShortUrl());
         Glide.with(this)
-                .load(detailNews.getImageByType(ImageType.THUMBLARGE))
+                .load(newsItem.getImageDetailUrl())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView);
-
-        titleView.setText(detailNews.getTitle());
-        dateView.setText(Utils.ConvertToPubFormat(detailNews.getPublishedDate()));
-        sectionView.setText(detailNews.getSection());
-        details_text.setText(detailNews.getPreviewText());
-
-        return view;
     }
 
     public static NewsDetailsFragment newInstance(final int _id){
@@ -104,4 +130,10 @@ public class NewsDetailsFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Utils.disposeSafe(disposables);
+        disposables = null;
+    }
 }

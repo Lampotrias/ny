@@ -2,5 +2,5 @@
     <dimen name="spacing_normal">16dp</dimen>
     <dimen name="spacing_micro">4dp</dimen>
     <dimen name="item_image_size">96dp</dimen>
-    <dimen name="image_height">260dp</dimen>
+    <dimen name="image_height">420dp</dimen>
 </resources>
