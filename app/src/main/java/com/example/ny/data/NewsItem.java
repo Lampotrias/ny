@@ -39,6 +39,9 @@ public class NewsItem {
     @SerializedName("short_url")
     private String shortUrl;
 
+    @SerializedName("url")
+    private String url;
+
     @SerializedName("multimedia")
     private List<MultimediaItem> multimedia;
 
@@ -62,6 +65,8 @@ public class NewsItem {
     }
 
     public String getShortUrl() {
+        if(shortUrl == null)
+            return url;
         return shortUrl;
     }
 

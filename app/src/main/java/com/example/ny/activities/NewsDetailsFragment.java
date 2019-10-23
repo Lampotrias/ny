@@ -35,7 +35,6 @@ public class NewsDetailsFragment extends Fragment {
     private static final String EXTRA_NEWS_ITEM = "extra:newsItem";
     private CompositeDisposable disposables;
     private int newsId;
-    private AppDatabase db;
     private Toolbar toolbar;
 
     private TextView detail_url;
@@ -50,6 +49,7 @@ public class NewsDetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         disposables = new CompositeDisposable();
     }
 
@@ -89,6 +89,12 @@ public class NewsDetailsFragment extends Fragment {
         Toast.makeText(getActivity(), "News not found: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
+        //super.onCreateOptionsMenu(menu, inflater);
+    }
+
     private void showNews(NewsItem newsItem)
     {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -116,18 +122,6 @@ public class NewsDetailsFragment extends Fragment {
         args.putInt(EXTRA_NEWS_ITEM, _id);
         newsDetailsFragment.setArguments(args);
         return newsDetailsFragment;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_detail_fragment, menu);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override

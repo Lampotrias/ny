@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {NewsEntity.class}, version = 4, exportSchema = false)
+@Database(entities = {NewsEntity.class}, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
 	private static AppDatabase singleton;
@@ -23,8 +23,8 @@ public abstract class AppDatabase extends RoomDatabase {
 					singleton = Room.databaseBuilder(context.getApplicationContext(),
 							AppDatabase.class,
 							DATABASE_NAME)
-							.fallbackToDestructiveMigration()
-							.addMigrations(MIGRATION_2_3)
+							//.fallbackToDestructiveMigration()
+							//.addMigrations(MIGRATION_2_3)
 							//.allowMainThreadQueries()
 							.build();
 				}

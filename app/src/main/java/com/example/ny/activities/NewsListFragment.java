@@ -45,12 +45,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import io.reactivex.schedulers.Schedulers;
 
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
-
 public class NewsListFragment extends Fragment {
-
-	private static final String TAG = NewsListFragment.class.getSimpleName();
-
 	private CompositeDisposable disposables;
 	@Nullable
 	private ProgressBar progress;
@@ -65,6 +60,9 @@ public class NewsListFragment extends Fragment {
 	private MenuItem mSpinnerItem = null;
 	private FloatingActionButton floatingReloadButton;
 
+	private ClickerResponder mainActivityResponder;
+
+
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,13 +71,18 @@ public class NewsListFragment extends Fragment {
 		setHasOptionsMenu(true);
 	}
 
+	public void setInterface(ClickerResponder mainActivityResponder) {
+		this.mainActivityResponder = mainActivityResponder;
+	}
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_news_list, container, false);
 
+
 		toolbar = view.findViewById(R.id.toolbar);
-		if (toolbar != null){
+		if (toolbar != null) {
 			toolbar.setTitle("NY Times");
 			context.setSupportActionBar(toolbar);
 		}
@@ -89,20 +92,12 @@ public class NewsListFragment extends Fragment {
 		error = view.findViewById(R.id.error_layout);
 		errorAction = view.findViewById(R.id.action_button);
 
-		adapter = new NewsListAdapter(context, id -> {
-			NewsDetailsFragment newsDetailsFragment = NewsDetailsFragment.newInstance(id);
-
-			context.getSupportFragmentManager()
-					.beginTransaction()
-					.addToBackStack(null)
-					.add(R.id.main_frame, newsDetailsFragment)
-					.commit();
-		});
+		adapter = new NewsListAdapter(context, id -> mainActivityResponder.OnClick(id));
 
 		if (recycler != null) {
+			recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 			recycler.setAdapter(adapter);
 			recycler.addItemDecoration(new NewsItemDecoration(getResources().getDimensionPixelSize(R.dimen.spacing_micro)));
-			//`FirstLoadFromDatabase();
 		}
 
 		if (errorAction != null) {
@@ -113,13 +108,6 @@ public class NewsListFragment extends Fragment {
 		floatingReloadButton.setOnClickListener(v -> {
 			LoadNewsFromNetwork();
 		});
-
-		if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-			final int columnsCount = getResources().getInteger(R.integer.landscape_news_columns_count);
-			recycler.setLayoutManager(new GridLayoutManager(getActivity(), columnsCount));
-		} else {
-			recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-		}
 
 		return view;
 	}
@@ -219,9 +207,6 @@ public class NewsListFragment extends Fragment {
 	}
 
 	private void handleError(Throwable th) {
-		if (Utils.isDebug()) {
-			Log.e(TAG, th.getMessage(), th);
-		}
 		Utils.setVisible(error, true);
 		Utils.setVisible(progress, false);
 		Utils.setVisible(recycler, false);
