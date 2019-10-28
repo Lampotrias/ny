@@ -7,14 +7,14 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/frame_list1"
+        android:id="@+id/frame_list"
         android:layout_width="350dp"
         android:layout_height="match_parent">
 
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/frame_detail1"
+        android:id="@+id/frame_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

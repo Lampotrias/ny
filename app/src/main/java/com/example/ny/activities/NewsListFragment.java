@@ -1,6 +1,7 @@
 package com.example.ny.activities;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +22,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,6 +65,7 @@ public class NewsListFragment extends Fragment {
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
+		Log.e("test_list", "onCreate");
 		super.onCreate(savedInstanceState);
 		disposables = new CompositeDisposable();
 		context = ((AppCompatActivity)getActivity());
@@ -80,6 +81,7 @@ public class NewsListFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_news_list, container, false);
 
+		Log.e("test_list", "onCreateView");
 
 		toolbar = view.findViewById(R.id.toolbar);
 		if (toolbar != null) {
@@ -114,6 +116,7 @@ public class NewsListFragment extends Fragment {
 
 	@Override
 	public void onStart() {
+		Log.e("test_list", "onStart");
 		super.onStart();
 
 		Utils.setVisible(error, false);
@@ -122,12 +125,14 @@ public class NewsListFragment extends Fragment {
 
 	@Override
 	public void onStop() {
+		Log.e("test_list", "onStop");
 		super.onStop();
 		showProgress(false);
 	}
 
 	@Override
 	public void onDestroy() {
+		Log.e("test_list", "onDestroy");
 		super.onDestroy();
 		adapter = null;
 		recycler = null;
@@ -220,7 +225,7 @@ public class NewsListFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
+		Log.e("test_list", "onCreateOptionsMenu");
 		inflater.inflate(R.menu.menu_option, menu);
 
 		mSpinnerItem = menu.findItem( R.id.action_bar_spinner);
@@ -252,5 +257,29 @@ public class NewsListFragment extends Fragment {
 				}
 			});
 		}
+	}
+
+	@Override
+	public void onPause() {
+		Log.e("test_list", "onPause");
+		super.onPause();
+	}
+
+	@Override
+	public void onResume() {
+		Log.e("test_list", "onResume");
+		super.onResume();
+	}
+
+	@Override
+	public void onAttach(@NonNull Context context) {
+		Log.e("test_list", "onAttach");
+		super.onAttach(context);
+	}
+
+	@Override
+	public void onDetach() {
+		Log.e("test_list", "onDetach");
+		super.onDetach();
 	}
 }

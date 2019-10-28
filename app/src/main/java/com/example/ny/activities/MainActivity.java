@@ -11,22 +11,44 @@ import com.example.ny.R;
 
 public class MainActivity extends AppCompatActivity implements ClickerResponder{
 
-	private boolean isTwoPanel;
+	private static boolean isTwoPanel;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.e("test111", "MainActivity::OnCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		isTwoPanel = findViewById(R.id.frame_detail1) != null;
+		isTwoPanel = findViewById(R.id.frame_detail) != null;
 
-		int frameId = isTwoPanel ? R.id.frame_list1 : R.id.frame_list;
-		NewsListFragment newsListFragment = new NewsListFragment();
-		getSupportFragmentManager()
-				.beginTransaction()
-				.add(frameId, newsListFragment)
-				.commit();
-		newsListFragment.setInterface(this);
+		if (savedInstanceState == null) {
+			NewsListFragment newsListFragment = new NewsListFragment();
+			getSupportFragmentManager()
+					.beginTransaction()
+					.addToBackStack(null)
+					.add(R.id.frame_list, newsListFragment, "tList")
+					.commit();
+			newsListFragment.setInterface(this);
+		}
+		else {
+			NewsListFragment newsListFragment = (NewsListFragment) getSupportFragmentManager().findFragmentByTag("tList");
+			if (newsListFragment != null){
+				getSupportFragmentManager()
+						.beginTransaction()
+						.replace(R.id.frame_list, newsListFragment, "tList")
+						.commit();
+				newsListFragment.setInterface(this);
+			}
+
+
+			NewsDetailsFragment newsDetailsFragment = (NewsDetailsFragment) getSupportFragmentManager().findFragmentByTag("tDetail");
+			if (newsDetailsFragment != null){
+				getSupportFragmentManager()
+						.beginTransaction()
+						.replace(R.id.frame_detail, newsDetailsFragment, "tDetail")
+						.commit();
+				newsListFragment.setInterface(this);
+			}
+		}
 	}
 
 	@Override
@@ -54,19 +76,18 @@ public class MainActivity extends AppCompatActivity implements ClickerResponder{
 			getSupportFragmentManager()
 					.beginTransaction()
 					//.addToBackStack(null)
-					.replace(R.id.frame_detail1, newsDetailsFragment)
+					.replace(R.id.frame_detail, newsDetailsFragment, "tDetail")
 					.commit();
 		}else {
 			getSupportFragmentManager()
 					.beginTransaction()
 					.addToBackStack(null)
-					.add(R.id.frame_list, newsDetailsFragment)
+					.replace(R.id.frame_list, newsDetailsFragment,"tDetail")
 					.commit();
 		}
 	}
 
-	@Override
-	public boolean isTwoPanel() {
+	public static boolean isTwoPanel() {
 		return isTwoPanel;
 	}
 }
