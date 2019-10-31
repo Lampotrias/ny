@@ -48,10 +48,6 @@ public class Utils {
         view.setVisibility(visibility);
     }
 
-    public static boolean isDebug() {
-        return BuildConfig.DEBUG;
-    }
-
     public static String[] GetCategoryArray(){
         return arr;
     }

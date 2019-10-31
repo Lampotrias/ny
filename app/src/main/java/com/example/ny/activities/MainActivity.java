@@ -1,19 +1,23 @@
 package com.example.ny.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.ny.R;
+import com.example.ny.utils.SyncService;
 
 public class MainActivity extends AppCompatActivity implements ClickerResponder{
 
 	private static boolean isTwoPanel;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		savedInstanceState = null;
 		Log.e("test111", "MainActivity::OnCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -28,27 +32,21 @@ public class MainActivity extends AppCompatActivity implements ClickerResponder{
 					.add(R.id.frame_list, newsListFragment, "tList")
 					.commit();
 			newsListFragment.setInterface(this);
-		}
-		else {
-			NewsListFragment newsListFragment = (NewsListFragment) getSupportFragmentManager().findFragmentByTag("tList");
-			if (newsListFragment != null){
+			if (isTwoPanel()){
+				NewsDetailsFragment newsDetailsFragment = NewsDetailsFragment.newInstance(0);
 				getSupportFragmentManager()
 						.beginTransaction()
-						.replace(R.id.frame_list, newsListFragment, "tList")
+						.addToBackStack(null)
+						.replace(R.id.frame_detail, newsDetailsFragment)
 						.commit();
-				newsListFragment.setInterface(this);
-			}
-
-
-			NewsDetailsFragment newsDetailsFragment = (NewsDetailsFragment) getSupportFragmentManager().findFragmentByTag("tDetail");
-			if (newsDetailsFragment != null){
-				getSupportFragmentManager()
-						.beginTransaction()
-						.replace(R.id.frame_detail, newsDetailsFragment, "tDetail")
-						.commit();
-				newsListFragment.setInterface(this);
 			}
 		}
+
+		Intent inService = new Intent(getApplicationContext(), SyncService.class);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+			getApplicationContext().startForegroundService(inService);
+		else
+			getApplicationContext().startService(inService);
 	}
 
 	@Override
@@ -75,14 +73,13 @@ public class MainActivity extends AppCompatActivity implements ClickerResponder{
 		if (isTwoPanel()){
 			getSupportFragmentManager()
 					.beginTransaction()
-					//.addToBackStack(null)
-					.replace(R.id.frame_detail, newsDetailsFragment, "tDetail")
+					.replace(R.id.frame_detail, newsDetailsFragment)
 					.commit();
 		}else {
 			getSupportFragmentManager()
 					.beginTransaction()
 					.addToBackStack(null)
-					.replace(R.id.frame_list, newsDetailsFragment,"tDetail")
+					.replace(R.id.frame_list, newsDetailsFragment)
 					.commit();
 		}
 	}

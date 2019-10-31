@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -49,11 +50,12 @@ public class NewsDetailsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(false);
         super.onCreate(savedInstanceState);
         disposables = new CompositeDisposable();
     }
@@ -98,8 +100,10 @@ public class NewsDetailsFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        menu.clear();
-        inflater.inflate(R.menu.menu_detail_fragment, menu);
+        MenuItem item=menu.findItem(R.id.action_bar_spinner);
+        item.setVisible(false);
+        //menu.clear();
+        //inflater.inflate(R.menu.menu_detail_fragment, menu);
     }
 
     private void showNews(NewsItem newsItem)

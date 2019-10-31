@@ -67,6 +67,7 @@ public class NewsListFragment extends Fragment {
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		Log.e("test_list", "onCreate");
 		super.onCreate(savedInstanceState);
+
 		disposables = new CompositeDisposable();
 		context = ((AppCompatActivity)getActivity());
 		setHasOptionsMenu(true);
@@ -116,7 +117,7 @@ public class NewsListFragment extends Fragment {
 
 	@Override
 	public void onStart() {
-		Log.e("test_list", "onStart");
+		//Log.e("test_list", "onStart");
 		super.onStart();
 
 		Utils.setVisible(error, false);
@@ -125,14 +126,14 @@ public class NewsListFragment extends Fragment {
 
 	@Override
 	public void onStop() {
-		Log.e("test_list", "onStop");
+		//Log.e("test_list", "onStop");
 		super.onStop();
 		showProgress(false);
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.e("test_list", "onDestroy");
+		//Log.e("test_list", "onDestroy");
 		super.onDestroy();
 		adapter = null;
 		recycler = null;
@@ -261,25 +262,25 @@ public class NewsListFragment extends Fragment {
 
 	@Override
 	public void onPause() {
-		Log.e("test_list", "onPause");
+		//Log.e("test_list", "onPause");
 		super.onPause();
 	}
 
 	@Override
 	public void onResume() {
-		Log.e("test_list", "onResume");
+		//Log.e("test_list", "onResume");
 		super.onResume();
 	}
 
 	@Override
 	public void onAttach(@NonNull Context context) {
-		Log.e("test_list", "onAttach");
+	//	Log.e("test_list", "onAttach");
 		super.onAttach(context);
 	}
 
 	@Override
 	public void onDetach() {
-		Log.e("test_list", "onDetach");
+		//Log.e("test_list", "onDetach");
 		super.onDetach();
 	}
 }
