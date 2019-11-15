@@ -13,7 +13,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.example.ny.R;
 import com.example.ny.data.ConverterData;
 import com.example.ny.data.NewsResponse;
 import com.example.ny.database.AppDatabase;
@@ -23,6 +22,7 @@ import com.example.ny.network.RestApi;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
 public class SyncService extends Service {
     private CompositeDisposable disposables;
     private static final String CHANNEL_ID = "SYNC_SERVICE";
-    private static final String ACTION_SNOOZE = "SNOOZE";
+    public static final String ACTION_STOP = "ACTION_STOP";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -61,19 +61,19 @@ public class SyncService extends Service {
             }
         }
         Intent snoozeIntent = new Intent(this, NetworkReceiver.class);
-        snoozeIntent.setAction(ACTION_SNOOZE);
+        snoozeIntent.setAction(ACTION_STOP);
         PendingIntent snoozePendingIntent =
                 PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
 
 
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(android.R.drawable.ic_dialog_email)
                 .setContentTitle("Sync news")
                 .setContentText("Now sync news from server")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setProgress(100,0, true)
                 .setContentIntent(snoozePendingIntent)
-                .addAction(R.drawable.ic_launcher_foreground, "Stop", snoozePendingIntent)
+                .addAction(android.R.drawable.btn_star, "Stop", snoozePendingIntent)
                 .build();
     }
     private void successNotify(){
@@ -87,33 +87,27 @@ public class SyncService extends Service {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(2, notification);
+        if (notificationManager != null) {
+            notificationManager.notify(2, notification);
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        Log.e("test == ", "Service start");
         startForeground(1, syncNotify());
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         INewsEndPoint endPoint = RestApi.getInstance().getEndPoint();
         disposables.add(endPoint.getNews()
                 .map(NewsResponse::getResults)
                 .map(ConverterData::fromListToDatabase)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .delay(20, TimeUnit.SECONDS)
                 .subscribe(this::UpdateDatabase, this::handleError)
         );
 
-        Log.e("test == ", "Service");
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            stopForeground(true);
-        //}
-
+        Log.e("test == ", "Service end");
         return START_STICKY;
     }
 
@@ -129,10 +123,10 @@ public class SyncService extends Service {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe());
-
+        stopForeground(true);
+        Log.e("test == ", "Service stopForeground");
         successNotify();
         stopSelf();
-
     }
 
     private void handleError(Throwable throwable) {
@@ -141,6 +135,7 @@ public class SyncService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.e("test == ", "Service onDestroy");
         super.onDestroy();
         Utils.disposeSafe(disposables);
         disposables = null;

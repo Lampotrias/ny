@@ -23,7 +23,7 @@ public abstract class AppDatabase extends RoomDatabase {
 					singleton = Room.databaseBuilder(context.getApplicationContext(),
 							AppDatabase.class,
 							DATABASE_NAME)
-							//.fallbackToDestructiveMigration()
+							.fallbackToDestructiveMigration()
 							//.addMigrations(MIGRATION_2_3)
 							//.allowMainThreadQueries()
 							.build();
